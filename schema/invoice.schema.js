@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
-    product: {
-        type: Integer,
+    productName: {
+        type: String,
         required: [true, 'product is required']
     },
     quantityPurchased: {
-        type: Integer,
+        type: Number,
         required: [true, 'quantity purchased is required']
     },
     buyerName: {

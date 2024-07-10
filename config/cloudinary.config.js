@@ -7,7 +7,7 @@ dotenv.config();
 /* 
 The way that we have set up the Cloudinary config method is to 
 insert an object that contains the cloud_name, api_key and api_secret.  
-Because all of this is sensitive information, its don’t advised adding
+Because all of this is sensitive information, it's not advisable adding
 the configuration as plain text which is how the dotenv tool will aid 
 in the process. It can use the environment tables to find the information 
 by adding a .env file into the root directory along with this code.

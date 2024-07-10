@@ -35,19 +35,3 @@ const productSchema = Joi.object({
 
 module.exports = productSchema;
 
-// const Joi = require('joi');
-
-
-// imageUrl:Joi.string().required()
-
-// const updateSchema = Joi.object({
-//     name:Joi.string().required(),
-//     description:Joi.string().required(),
-//     price:Joi.number(),
-//     quantity:Joi.number(),
-//     isPurchased:Joi.number(),
-//     categoryId:Joi.ref('categories').required(),
-//     imgUrl:Joi.string()
-// });
-// module.exports = productSchema;
-

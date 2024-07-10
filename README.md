@@ -10,7 +10,7 @@ authentication check validation eg if you re logged in as the right user
 Other packages to be installed:
     a. Middleware: formidable
     b. Nodemailer and Zoho enables us to send emails
-    c. Zod is a validation package to validate your request body.
+    c. Zod or Joi is a validation package to validate your request body.
 
 
 Zod is a middleware between the request route and the validation
@@ -29,7 +29,7 @@ cloudinary: an online file storage system, upload your files to cloudinary and i
 Study Validation packages jpy and yum
 create a paystack account and a zoho account
 
-for experiment: genny id: 6673580fd1fd632a90f22225, chinenyeid: 6673573cd1fd632a90f22223
+for experiment: genny, chinenye 
 http://localhost:8080/category/create
 
 joi Validation
@@ -40,7 +40,7 @@ yarn add express-joi-validate --save
 // assign
 complete the crud category and the product, add the validation, upload a product image
 
-Multer is a nodejs middleware used for uploading images
+Multer and cloudinary is a nodejs middleware used for uploading images
 npm install multer --save
 
 EJS (Embedded Javascript) is a templating engine for nodejs. This engine helps to create an HTML page via templates with minimal code.

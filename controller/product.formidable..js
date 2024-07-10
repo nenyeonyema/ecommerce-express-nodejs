@@ -61,3 +61,32 @@ const updateOneProduct = async (req, res) => {
         throw new Error(error);
     }
 }
+
+// const updateOneProduct = async (req, res) => {
+//     const { name, description, price, quantity, isPurchased, categoryId, imgUrl } = req.body;
+//     try {
+//         const { id } = req.params;
+        
+//         // const category = await catInstance.findOneCat({_id: categoryId});
+//         const category = await catInstance.findeOneCat(categoryId);
+//         if(!category) {
+//             res.status(400).json("category not found");
+//         }
+//         const newUpdate = {
+//             name,
+//             description,
+//             price,
+//             quantity,
+//             isPurchased,
+//             categoryId: category._id,
+//             imgUrl: imgUrl ?? ''  
+//         }
+
+//         const updatedAProduct = productInstance.findAndUpdateOneProduct(id, newUpdate);
+//         res.status(200).json(updatedAProduct);
+//     }
+//     catch(error) {
+//         console.log(error);
+//         throw new Error(error);
+//     }
+// }

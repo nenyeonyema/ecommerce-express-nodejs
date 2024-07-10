@@ -1,6 +1,7 @@
 const productInstance = require('../services/product.service');
 const catInstance = require('../services/cat.service');
 const formidable = require('formidable');
+const { updateValidator } = require('../joiSchema/update.schema');
 const uploadFile = require('../utilities/upload.util');
 
 const createProduct = async (req, res, next) => {
@@ -22,7 +23,8 @@ const createProduct = async (req, res, next) => {
 
         console.log('Fields:', fields);
         console.log('Files:', files);
-        
+
+        // Manually validates the fields without joi, which means it won't be passed in the route since the fields will be validated within the body of the function
         if(!name || !description || !price || !quantity || !isPurchased || !categoryId || !imgUrl) {
             return res.status(500).json('Details not complete')
         }
@@ -77,38 +79,58 @@ const findOneProduct = async (req, res) => {
 }
 
 const updateOneProduct = async (req, res) => {
-    const { name, description, price, quantity, isPurchased, categoryId, imgUrl } = req.body;
-    try {
-        const { id } = req.params;
-        
-        // const category = await catInstance.findOneCat({_id: categoryId});
-        const category = await catInstance.findeOneCat(categoryId);
-        if(!category) {
-            res.status(400).json("category not found");
+
+    const form = formidable({maxFieldsSize: 400});
+ 
+    const { id } = req.params;
+    
+    form.parse(req, async (err, fields, files) => {
+        if(err) {
+            throw next(err);
         }
+
+        // calls the required joi form validator to validate fields. This wont be passed in the route since it is validated within the function body
+        const { error } = updateValidator(fields);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const { name, description, price, quantity, isPurchased, categoryId } = fields;
+        const imgUrl = files.imgUrl;
+        
+
+        const { secure_url } = await uploadFile(files['imgUrl'].filepath, 'intro');
+        
+        const category = await catInstance.findeOneCat({_id: categoryId});
+
+        if(!category) {
+            throw res.status(404).json('Category not found')
+        }
+
+        // updated details with optional inputs
         const newUpdate = {
-            name,
-            description,
-            price,
-            quantity,
-            isPurchased,
+            ...(name && { name }),
+            ...(description && { description }),
+            ...(price && { price }),
+            ...(quantity && { quantity }),
+            ...(isPurchased && { isPurchased }),
             categoryId: category._id,
-            imgUrl: imgUrl ?? ''  
+            imgUrl: secure_url
         }
 
         const updatedAProduct = productInstance.findAndUpdateOneProduct(id, newUpdate);
         res.status(200).json(updatedAProduct);
-    }
-    catch(error) {
-        console.log(error);
-        throw new Error(error);
-    }
+    });
+    
 }
 
 const deleteOneProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const deletedAProduct = await productInstance.deleteOneProduct(id);
+        if(!deletedAProduct) {
+            res.status(404).json('Product not found')
+        }
         res.status(200).json(deletedAProduct);
     }
     catch(error) {
