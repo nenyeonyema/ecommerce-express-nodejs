@@ -15,8 +15,18 @@ cloudinary.config({
 
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', routehandler);
+
+// Error-handling middleware to catch bad JSON errors
+// app.use((err, req, res, next) => {
+//     if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+//         console.error('Bad JSON: ', err.message);
+//         return res.status(400).send({ message: 'Bad JSON' });
+//     }
+//     next();
+// });
 
 // This attends to request where the request matches non of the routehandlers
 app.use('*', (req, res) => {

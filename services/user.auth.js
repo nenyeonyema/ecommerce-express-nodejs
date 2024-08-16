@@ -12,7 +12,7 @@ class UserService {
         return users;
     }
     async findUserById(id) {
-        const foundUser = await usermodel.findOne({_id: id}); //.select('-password')
+        const foundUser = await usermodel.findOne({_id: id});
         return foundUser;
     }
 
@@ -22,7 +22,7 @@ class UserService {
     }
 
     async findOneUpdate(id, info) {
-        const updatedUser = await usermodel.findOneandUpdate({_id: id}, info, {new: true}); //.select('-password')
+        const updatedUser = await usermodel.findOneAndUpdate({_id: id}, info, {new: true}).select('-password');
         return updatedUser;
     }
 

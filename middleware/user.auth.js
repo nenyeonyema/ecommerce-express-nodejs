@@ -1,26 +1,37 @@
 const jwt = require("jsonwebtoken");
 const configVariables = require('../config/config');
+const User = require('../schema/user.schema');  
 
-// const config = process.env;
-
-const verifyToken = (req, res, next) => {
-  // const token = req.body.token || req.query.token || req.headers["x-access-token"] || req.header("Authorization")?.split(" ")[1];
- 
-  const authHeader = req.headers["Authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
+const authenticate = async (req, res, next) => {
+  console.log("Headers:", req.headers);
+  const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
-    return res.status(403).json({message: "A token is required for authentication"});
+    return res.status(401).json({ message: 'Unauthorized: No token provided' });
   }
+  console.log("Extracted Token:", token);
+  console.log("JWT Secret:", configVariables.JWT_TOKEN);
   try {
     const decoded = jwt.verify(token, configVariables.JWT_TOKEN);
-    req.user = decoded;
     console.log(decoded);
+    req.user = await User.findById(decoded.id).select('-password');
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized: User not found' });
+    }
+    next();
   } catch (err) {
-    console.log(err);
-    return res.status(401).json("Invalid Token");
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Unauthorized: Token has expired' });
+    }
+    return res.status(401).json({ message: err.message });
   }
-  return next();
 };
 
-module.exports = verifyToken;
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ message: 'Forbidden: Admins only' });
+  }
+};
+
+module.exports = { authenticate, isAdmin };

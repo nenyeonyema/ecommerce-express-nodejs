@@ -10,24 +10,28 @@ const userSchema = new Schema({
         type: String,
         required: [true, 'lastname is required']
     },
+
     email: {
         type: String,
         required: [true, 'email is required'],
         unique: true,
         lowercase: true,
         trim: true,
-        validate: {
-          validator: function (value) {
-            return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(value);
-          },
-          message: 'please enter a valid email',
-        }
-    },
+    },  
     password: {
         type: String,
-        required: [true, 'password is required']
+        required: [true, "password is required"],
+        minlength: 8,
+        maxlength: 1024,
+    },
+    role: {
+        type: String,
+        required: [true, 'role is required'],
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 }, { timestamps: true }
 );
+
 
 module.exports = mongoose.model("User", userSchema);

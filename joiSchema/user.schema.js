@@ -21,15 +21,24 @@ const userRegSchema = Joi.object({
         'string.email': `"email" must be a valid email`,
         'any.required': `"email" is a required field`
     }),
-    password: Joi.string().pattern(PASSWORD_REGEX).required().messages({
+    password: Joi.string().pattern(PASSWORD_REGEX).min(8).max(1024).required().messages({
         'string.base': `"password" should be a type of 'text'`,
         'string.empty': `"password" cannot be an empty field`,
+        'string.min': `"password" should have a minimum length of 8 characters`,
+        'string.max': `"password" should have a maximum length of 1024 characters`,
         'string.pattern.base': `"password" must contain at least one uppercase letter, one lowercase letter, one number, and one special character`,
         'any.required': `"password" is a required field`
+    }),
+    role: Joi.string().valid('user', 'admin').required().messages({
+        'string.base': `"role" should be a type of 'text'`,
+        'string.empty': `"role" cannot be an empty field`,
+        'any.only': `"role" must be one of ['user', 'admin']`,
+        'any.required': `"role" is a required field`
     })
+
 });
 
-// Define the Joi schema for user login
+
 const loginSchema = Joi.object({
     email: Joi.string().email().required().messages({
         'string.base': `"email" should be a type of 'text'`,
@@ -37,15 +46,16 @@ const loginSchema = Joi.object({
         'string.email': `"email" must be a valid email`,
         'any.required': `"email" is a required field`
     }),
-    password: Joi.string().pattern(PASSWORD_REGEX).required().messages({
+    password: Joi.string().pattern(PASSWORD_REGEX).min(8).max(1024).required().messages({
         'string.base': `"password" should be a type of 'text'`,
         'string.empty': `"password" cannot be an empty field`,
+        'string.min': `"password" should have a minimum length of 8 characters`,
+        'string.max': `"password" should have a maximum length of 1024 characters`,
         'string.pattern.base': `"password" must contain at least one uppercase letter, one lowercase letter, one number, and one special character`,
         'any.required': `"password" is a required field`
     })
 });
 
-// Define the Joi schema for user updates
 const userUpdateSchema = Joi.object({
     firstname: Joi.string().messages({
         'string.base': `"firstname" should be a type of 'text'`,
@@ -60,17 +70,20 @@ const userUpdateSchema = Joi.object({
         'string.empty': `"email" cannot be an empty field`,
         'string.email': `"email" must be a valid email`
     }).optional(),
-    password: Joi.string().pattern(PASSWORD_REGEX).messages({
+    password: Joi.string().pattern(PASSWORD_REGEX).min(6).max(6).messages({
         'string.base': `"password" should be a type of 'text'`,
         'string.empty': `"password" cannot be an empty field`,
+        'string.min': `"password" should have a minimum length of 6 characters`,
+        'string.max': `"password" should have a maximum length of 6 characters`,
         'string.pattern.base': `"password" must contain at least one uppercase letter, one lowercase letter, one number, and one special character`
-    }).optional(),
-    // createdAt: Joi.date().optional(),  // If you need to validate this field
-    // updatedAt: Joi.date().optional()   // If you need to validate this field
+    }).optional(),  
 });
-// Function to validate user login data
 
+const idSchema = Joi.object({
+    id: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required().messages({
+        'string.pattern.base': 'Invalid ID format. ID must be a 24-character hex string.',
+        'any.required': 'ID is required.'
+    })
+});
 
-// module.exports = validateUserLogin;
-
-module.exports = { userRegSchema, loginSchema, userUpdateSchema };
+module.exports = { userRegSchema, loginSchema, userUpdateSchema, idSchema };
